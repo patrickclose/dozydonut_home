@@ -12,19 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
             businessChallenges: document.getElementById('business-challenges').value,
         };
 
-        const response = await fetch('/api/contact', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
+        console.log('Form Data:', formData);
 
-        if (response.ok) {
-            alert('Email sent successfully!');
-            form.reset();
-        } else {
-            alert('Failed to send email.');
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert('Email sent successfully!');
+                form.reset();
+            } else {
+                alert('Failed to send email.');
+                console.error('Failed response:', response);
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            alert('Error sending email.');
         }
     });
 });
@@ -33,22 +41,21 @@ var spanText = function spanText(text) {
     var string = text.innerText;
     var spaned = '';
     for (var i = 0; i < string.length; i++) {
-      if(string.substring(i, i + 1) === ' ') spaned += string.substring(i, i + 1);
-      else spaned += '<span>' + string.substring(i, i + 1) + '</span>';
+        if (string.substring(i, i + 1) === ' ') spaned += string.substring(i, i + 1);
+        else spaned += '<span>' + string.substring(i, i + 1) + '</span>';
     }
     text.innerHTML = spaned;
-  }
-  
-  var headline = document.querySelector("h1");
-  
-  spanText(headline);
-  
-  let animations = document.querySelectorAll('.animation');
-  
-  animations.forEach(animation => {
+}
+
+var headline = document.querySelector("h1");
+
+spanText(headline);
+
+let animations = document.querySelectorAll('.animation');
+
+animations.forEach(animation => {
     let letters = animation.querySelectorAll('span');
     letters.forEach((letter, i) => {
-      letter.style.animationDelay = (i * 0.1) + 's';
+        letter.style.animationDelay = (i * 0.1) + 's';
     })
-  })
-  
+});

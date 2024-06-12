@@ -1,46 +1,40 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
-require('dotenv').config();
+import nodemailer from 'nodemailer';
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
 
-app.use(bodyParser.json());
-
-app.post('/api/contact', async (req, res) => {
-  const { firstName, lastName, workEmail, businessPhone, companyWebsite, businessChallenges } = req.body;
-
-  const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS,
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
     },
-  });
-
-  const mailOptions = {
-    from: process.env.GMAIL_USER,
-    to: 'contact@dozydonut.com',
-    subject: 'New Contact Form Submission',
-    text: `
-      First Name: ${firstName}
-      Last Name: ${lastName}
-      Work Email: ${workEmail}
-      Business Phone: ${businessPhone}
-      Company Website: ${companyWebsite}
-      Business Challenges: ${businessChallenges}
-    `,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Email sent successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to send email', error });
-  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.post('/api/contact', (req, res) => {
+    const { firstName, lastName, workEmail, businessPhone, companyWebsite, businessChallenges } = req.body;
+
+    const mailOptions = {
+        from: process.env.GMAIL_USER,
+        to: 'contact@dozydonut.com',
+        subject: 'New Contact Form Submission',
+        text: `First Name: ${firstName}\nLast Name: ${lastName}\nWork Email: ${workEmail}\nBusiness Phone: ${businessPhone}\nCompany Website: ${companyWebsite}\nBusiness Challenges: ${businessChallenges}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return res.status(500).send('Failed to send email.');
+        }
+        res.status(200).send('Email sent successfully!');
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
