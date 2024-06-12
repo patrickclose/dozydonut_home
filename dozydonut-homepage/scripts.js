@@ -1,17 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const text = document.querySelector('.animated-text');
-    const sentence = document.querySelector('.animated-sentence');
-
-    setTimeout(() => {
-        text.classList.add('loaded');
-        sentence.classList.add('loaded');
-    }, 1000);
-
-    document.body.addEventListener('click', () => {
-        text.classList.toggle('loaded');
-        sentence.classList.toggle('loaded');
-    });
-
     const form = document.getElementById('contact-form');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
